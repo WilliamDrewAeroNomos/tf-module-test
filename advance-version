@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+  echo "Error: Incorrect number of parameters."
+  echo "The following parameters are required:"
+  echo "Arg #1 - from version (i.e. - v1.0)"
+  echo "Arg #2 - to version (i.e. - v1.1)"
+  echo "Example: > advance-version v1.0 v1.1"
+  exit 2
+fi
+
+from_version="ref=""$1"
+to_version="ref=""$2"
+
+echo "Moving from "$from_version" to "$to_version"..."
+
+find . -type f -name "*.tf" -print0 | xargs -0 sed -i '' -e 's/'"$from_version"'/'"$to_version"'/g'

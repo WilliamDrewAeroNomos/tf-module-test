@@ -23,7 +23,7 @@ variable "ENVIRONMENT" {
   type        = string
 }
 
-variable "VPC_CIDR_BLOCK" {
+variable "CIDR_BLOCK" {
   description = "Working context (i.e. - dev, test, pre-prod)"
   type        = string
 }
