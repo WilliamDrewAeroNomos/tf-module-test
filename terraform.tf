@@ -16,14 +16,14 @@ variable "TF_STATE_DYNAMODB_TABLE_NAME" {
   default     = "testing-modularity-terraform-state-locks"
 }
 
-# Defined for each environment testing
+# Variables defined for each environment 
 
-variable "ENVIRONMENT" {
+variable "VPC_NAME" {
   description = "Working context (i.e. - dev, test, pre-prod)"
   type        = string
 }
 
-variable "VPC_CIDR_BLOCK" {
+variable "CIDR_BLOCK" {
   description = "Working context (i.e. - dev, test, pre-prod)"
   type        = string
 }
