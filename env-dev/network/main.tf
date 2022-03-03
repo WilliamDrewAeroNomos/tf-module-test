@@ -4,7 +4,7 @@
 
 module "ahroc_main_vpc" {
 
-  source = "git::https://github.com/WilliamDrewAeroNomos/tf-modules.git//modules/vpc?ref=v1.1"
+  source = "git::https://github.com/WilliamDrewAeroNomos/tf-modules.git//modules/vpc?ref=v2.0"
 
   # insert required variables here
 
