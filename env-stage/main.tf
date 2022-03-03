@@ -1,10 +1,10 @@
 #---------------------------
-# Staging VPC
+# Staging environment
 #---------------------------
 
 module "ahroc_main_vpc" {
 
-  source = "git::https://github.com/WilliamDrewAeroNomos/tf-modules.git//modules/vpc?ref=v1.0"
+  source = "git::https://github.com/WilliamDrewAeroNomos/tf-modules.git//modules/vpc?ref=v1.2"
 
   # insert required variables here
 

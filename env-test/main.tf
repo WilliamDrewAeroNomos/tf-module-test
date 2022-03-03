@@ -1,5 +1,5 @@
 #---------------------------
-# Development VPC
+# Test environment
 #---------------------------
 
 module "ahroc_main_vpc" {
