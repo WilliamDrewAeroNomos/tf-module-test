@@ -105,7 +105,7 @@ variable "AUTO_SHUTDOWN_SCHEDULE" {
   default     = "0000-1200 UTC"
 }
 
-# Variables defined for each environment 
+# Network
 
 variable "VPC_NAME" {
   description = "Working context (i.e. - dev, test, pre-prod)"
@@ -121,3 +121,21 @@ variable "ENVIRONMENT" {
   description = "Working context (i.e. - dev, test, pre-prod)"
   type        = string
 }
+
+# Persistence
+
+variable "domain" {
+  type = string
+}
+variable "instance_type" {
+  type = string
+}
+variable "tag_domain" {
+  type = string
+}
+variable "volume_type" {
+  type = string
+}
+variable "ebs_volume_size" {}
+
+
