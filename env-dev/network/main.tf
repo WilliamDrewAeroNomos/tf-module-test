@@ -210,5 +210,22 @@ resource "aws_route_table" "nated_3" {
   }
 }
 
+# Associations for NAT'd subnets and route tables
+
+resource "aws_route_table_association" "nated_1" {
+    subnet_id = aws_subnet.nated_1.id
+    route_table_id = aws_route_table.nated_1.id
+}
+
+resource "aws_route_table_association" "nated_2" {
+    subnet_id = aws_subnet.nated_2.id
+    route_table_id = aws_route_table.nated_2.id
+}
+
+resource "aws_route_table_association" "nated_3" {
+    subnet_id = aws_subnet.nated_3.id
+    route_table_id = aws_route_table.nated_3.id
+}
+
 
 
