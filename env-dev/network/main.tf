@@ -63,3 +63,30 @@ resource "aws_subnet" "main-public-4" {
     Name = "${var.ENVIRONMENT}-public-subnet-${data.aws_availability_zones.available.names[3]}"
   }
 }
+
+# Internet Gateway
+
+resource "aws_internet_gateway" "igw-main" {
+  vpc_id = module.ahroc_main_vpc.vpc-main-id
+
+  tags = {
+    Name = "${var.ENVIRONMENT}-igw"
+  }
+}
+
+# Route table
+
+resource "aws_route_table" "public" {
+    vpc_id = module.ahroc_main_vpc.vpc-main-id
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.igw-main.id
+    }
+
+    tags = {
+        Name = "${var.ENVIRONMENT}-public-rt"
+    }
+}
+
+
