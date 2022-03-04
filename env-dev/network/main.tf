@@ -169,5 +169,46 @@ resource "aws_nat_gateway" "gw_3" {
   subnet_id     = aws_subnet.main-public-3.id
 }
 
+# NAT'd subnet route tables
+
+resource "aws_route_table" "nated_1" {
+  vpc_id = module.ahroc_main_vpc.vpc-main-id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw_1.id
+  }
+
+  tags = {
+    Name = "${var.ENVIRONMENT}-nated-rt-1"
+  }
+}
+
+resource "aws_route_table" "nated_2" {
+  vpc_id = module.ahroc_main_vpc.vpc-main-id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw_2.id
+  }
+
+  tags = {
+    Name = "${var.ENVIRONMENT}-nated-rt-2"
+  }
+}
+
+resource "aws_route_table" "nated_3" {
+  vpc_id = module.ahroc_main_vpc.vpc-main-id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw_3.id
+  }
+
+  tags = {
+    Name = "${var.ENVIRONMENT}-nated-rt-3"
+  }
+}
+
 
 
