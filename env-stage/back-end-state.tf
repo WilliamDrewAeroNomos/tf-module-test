@@ -1,10 +1,10 @@
 
 terraform {
   backend "s3" {
-    bucket         = "dod-usarmy-cmh-arhoc-terraform-state"
-    key            = "stage/s3/terraform.tfstate"
+    bucket         = "dod-usarmy-tradoc-cmh-arhoc-terraform-state"
+    key            = "ahroc/stage/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "dod-usarmy-cmh-arhoc-terraform-state-locks"
+    dynamodb_table = "dod-usarmy-tradoc-cmh-arhoc-terraform-state-locks"
     encrypt        = true
   }
 }
