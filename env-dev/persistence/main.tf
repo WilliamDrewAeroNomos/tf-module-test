@@ -1,10 +1,9 @@
-#---------------------------
-# Development environment
-#---------------------------
 
-resource "aws_iam_service_linked_role" "es" {
-  aws_service_name = "es.amazonaws.com"
-}
+# Service linked role
+
+#resource "aws_iam_service_linked_role" "es" {
+#  aws_service_name = "es.amazonaws.com"
+#}
 
 # Creating the Elasticsearch domain
 
@@ -19,7 +18,7 @@ resource "aws_elasticsearch_domain" "es" {
     automated_snapshot_start_hour = 23
   }
   vpc_options {
-    subnet_ids = ["subnet-0d8c53ffee6d4c59e"]
+    subnet_ids = [data.terraform_remote_state.network.outputs.public_subnet_1_id]
   }
   ebs_options {
     ebs_enabled = var.ebs_volume_size > 0 ? true : false
@@ -49,3 +48,5 @@ resource "aws_elasticsearch_domain_policy" "main" {
 }
 POLICIES
 }
+
+

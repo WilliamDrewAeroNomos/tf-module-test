@@ -8,3 +8,12 @@ terraform {
     encrypt        = true
   }
 }
+
+data "terraform_remote_state" "info" {
+    backend = "s3"
+    config = {
+        bucket  = "dod-usarmy-tradoc-cmh-arhoc-terraform-state"
+        key     = "ahroc/dev/terraform.tfstate"
+        region  = "us-east-1"
+    }
+}
