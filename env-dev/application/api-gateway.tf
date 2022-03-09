@@ -90,7 +90,7 @@ resource "aws_api_gateway_deployment" "lambda-api-gateway" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
-  stage_name  = var.stage
+  stage_name  = var.ENVIRONMENT
 }
 
 output "base_url" {
