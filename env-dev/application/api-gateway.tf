@@ -66,7 +66,7 @@ resource "aws_api_gateway_method_response" "response_200" {
   response_models = { "application/json" = "Empty" }
 }
 
-resource "aws_api_gateway_integration_response" "IntegrationResponse" {
+resource "aws_api_gateway_integration_response" "integrationResponse" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
     aws_api_gateway_integration.lambda_root,
@@ -86,7 +86,7 @@ resource "aws_api_gateway_integration_response" "IntegrationResponse" {
 resource "aws_api_gateway_deployment" "lambda-api-gateway" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
-    aws_api_gateway_integration_response.IntegrationResponse,
+    aws_api_gateway_integration_response.integrationResponse,
   ]
 
   rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
