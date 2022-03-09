@@ -83,28 +83,6 @@ resource "aws_api_gateway_integration_response" "IntegrationResponse" {
   }
 }
 
-# Model
-# resource "aws_api_gateway_model" "MyDemoModel" {
-# rest_api_id = "${aws_api_gateway_rest_api.lambda-api-gateway.id}"
-# name = "usermodel"
-# description = "a JSON schema"
-# content_type = "application/json"
-# 
-# #the payload of the POST request
-# schema = <<EOF
-# {
-# "$schema": "http://json-schema.org/draft-04/schema#",
-# "title": "usermodel",
-# "type": "object",
-# "properties": 
-# {
-# "callerName": { "type": "string" }
-# }
-# 
-# }
-# EOF
-#}
-
 resource "aws_api_gateway_deployment" "lambda-api-gateway" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
