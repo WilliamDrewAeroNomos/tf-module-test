@@ -47,22 +47,21 @@ data "aws_ecr_image" "lambda_image" {
   image_tag       = local.ecr_image_tag
 }
 
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_iam_role" "lambda" {
   name               = "${local.prefix}-lambda-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-      {
-          "Action": "sts:AssumeRole",
-          "Principal": {
-              "Service": "lambda.amazonaws.com"
-          },
-          "Effect": "Allow"
-      }
-  ]
-}
-  EOF
+  assume_role_policy = "${data.aws_iam_policy_document.lambda_assume_role_policy.json}"
 }
 
 data "aws_iam_policy_document" "lambda" {
