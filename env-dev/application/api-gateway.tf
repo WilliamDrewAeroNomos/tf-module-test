@@ -2,26 +2,26 @@
 #
 #
 
-resource "aws_api_gateway_rest_api" "lambda-api-gateway" {
+resource "aws_api_gateway_rest_api" "this" {
   name        = "LambdaApiGateway"
   description = "Lambda Container Application GW"
 }
 
 resource "aws_api_gateway_resource" "number" {
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
-  parent_id   = aws_api_gateway_rest_api.lambda-api-gateway.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
   path_part   = "{${var.resource_name}+}"
 }
 
 resource "aws_api_gateway_method" "number" {
-  rest_api_id   = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.number.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "lambda-python" {
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_method.number.resource_id
   http_method = aws_api_gateway_method.number.http_method
 
@@ -40,15 +40,15 @@ EOF
 }
 
 resource "aws_api_gateway_method" "number_root" {
-  rest_api_id   = aws_api_gateway_rest_api.lambda-api-gateway.id
-  resource_id   = aws_api_gateway_rest_api.lambda-api-gateway.root_resource_id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_rest_api.this.root_resource_id
   http_method   = "GET"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "lambda_root" {
 
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_method.number_root.resource_id
   http_method = aws_api_gateway_method.number_root.http_method
 
@@ -58,7 +58,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 }
 
 resource "aws_api_gateway_method_response" "response_200" {
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_resource.number.id
   http_method = aws_api_gateway_method.number.http_method
   status_code = "200"
@@ -71,7 +71,7 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
     aws_api_gateway_integration.lambda-python,
     aws_api_gateway_integration.lambda_root,
   ]
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_resource.number.id
   http_method = aws_api_gateway_method.number.http_method
   status_code = aws_api_gateway_method_response.response_200.status_code
@@ -83,16 +83,16 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
   }
 }
 
-resource "aws_api_gateway_deployment" "this" {
+resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
     aws_api_gateway_integration_response.integrationResponse,
   ]
 
-  rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  rest_api_id = aws_api_gateway_rest_api.this.id
   stage_name  = var.ENVIRONMENT
 }
 
 output "base_url" {
-  value = "${aws_api_gateway_deployment.this.invoke_url}/${var.resource_name}"
+  value = "${aws_api_gateway_deployment.api_gateway_deployment.invoke_url}/${var.resource_name}"
 }
