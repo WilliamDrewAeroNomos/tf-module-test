@@ -75,7 +75,7 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
   resource_id = aws_api_gateway_resource.number.id
   http_method = aws_api_gateway_method.number.http_method
   status_code = aws_api_gateway_method_response.response_200.status_code
-  # Transforms the backend JSON response to json. The space is "A must have"
+  # Transforms the backend JSON response to json. The space is required!!
   response_templates = {
     "application/json" = <<EOF
  

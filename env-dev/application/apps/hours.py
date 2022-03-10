@@ -4,5 +4,5 @@ def handler(event, context):
     print(h)
 
     return {
-        'past hours': h
+        'As a float': h
     }
