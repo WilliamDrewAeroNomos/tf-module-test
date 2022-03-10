@@ -8,8 +8,8 @@ resource "aws_api_gateway_rest_api" "lambda-api-gateway" {
 }
 
 resource "aws_api_gateway_resource" "number" {
-  parent_id   = aws_api_gateway_rest_api.lambda-api-gateway.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.lambda-api-gateway.id
+  parent_id   = aws_api_gateway_rest_api.lambda-api-gateway.root_resource_id
   path_part   = "{${var.resource_name}+}"
 }
 
@@ -83,7 +83,7 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
   }
 }
 
-resource "aws_api_gateway_deployment" "lambda-api-gateway" {
+resource "aws_api_gateway_deployment" "this" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
     aws_api_gateway_integration_response.integrationResponse,
@@ -94,5 +94,5 @@ resource "aws_api_gateway_deployment" "lambda-api-gateway" {
 }
 
 output "base_url" {
-  value = "${aws_api_gateway_deployment.lambda-api-gateway.invoke_url}/${var.resource_name}"
+  value = "${aws_api_gateway_deployment.this.invoke_url}/${var.resource_name}"
 }
