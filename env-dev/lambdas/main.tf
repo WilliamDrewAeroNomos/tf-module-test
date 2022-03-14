@@ -81,7 +81,7 @@ output "function_name" {
 #------------------
 
 resource "aws_apigatewayv2_api" "lambda" {
-  name          = "serverless_lambda_gw"
+  name          = "Lambda API Gateway - Zip/S3 bucket"
   protocol_type = "HTTP"
 }
 

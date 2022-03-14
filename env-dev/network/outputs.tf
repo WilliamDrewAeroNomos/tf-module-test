@@ -1,6 +1,9 @@
 
 # Outputs
 
+output "vpc-main-id" {
+  value = module.ahroc_main_vpc.vpc-main-id
+}
 output "public_subnet_1_id" {
   value = aws_subnet.main-public-1.id
 }
