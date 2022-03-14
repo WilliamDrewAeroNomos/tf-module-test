@@ -1,30 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.74.3"
-    }
-  }
-}
-
-provider "aws" {
-  region = var.AWS_REGION
-
-  default_tags {
-    tags = {
-      Environment                    = "${var.ENVIRONMENT}",
-      "Impact Level"                 = "${var.IMPACT_LEVEL}",
-      Organization                   = "${var.ORGANIZATION}",
-      "Cost Center"                  = "${var.COST_CENTER}",
-      "Cost Allocation"              = "${var.COST_ALLOCATION}",
-      "Contact-Government Primary"   = "${var.CONTACT_GOVERNMENT_PRIMARY}",
-      "System Name"                  = "${var.SYSTEM_NAME}",
-      Enterprise                     = "${var.ENTERPRISE}",
-      "Public Facing"                = "${var.PUBLIC_FACING}",
-      AutoShutdownSchedule           = "${var.AUTO_SHUTDOWN_SCHEDULE}"
-    }
-  }
-}
 
 resource "random_pet" "lambda_bucket_name" {
   prefix = "army-ahroc-lambdas"
@@ -46,6 +19,7 @@ data "archive_file" "lambda_hello_world" {
 }
 
 resource "aws_s3_bucket_object" "lambda_hello_world" {
+  provider = aws.S3-bucket-object-tags
   bucket = aws_s3_bucket.lambda_bucket.id
 
   key    = "hello-world.zip"

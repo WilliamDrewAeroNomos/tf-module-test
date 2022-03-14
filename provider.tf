@@ -32,3 +32,20 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region = var.AWS_REGION
+
+  alias = "S3-bucket-object-tags"
+
+  default_tags {
+    tags = {
+      Environment                  = "${var.ENVIRONMENT}",
+      "Impact Level"               = "${var.IMPACT_LEVEL}",
+      Organization                 = "${var.ORGANIZATION}",
+      "Cost Center"                = "${var.COST_CENTER}",
+      "Cost Allocation"            = "${var.COST_ALLOCATION}",
+      "Contact-Government Primary" = "${var.CONTACT_GOVERNMENT_PRIMARY}"
+    }
+  }
+}
+

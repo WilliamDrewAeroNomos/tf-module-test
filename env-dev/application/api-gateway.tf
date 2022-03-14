@@ -59,7 +59,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
 resource "aws_api_gateway_method_response" "response_200" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  
+
   resource_id = aws_api_gateway_resource.number.id
   http_method = aws_api_gateway_method.number.http_method
   status_code = "200"
