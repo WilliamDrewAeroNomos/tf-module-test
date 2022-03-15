@@ -155,3 +155,8 @@ variable "primary_node_type" {
 variable "secondary_node_type" {
 }
 
+variable "key_name" {
+  type = string
+}
+
+
