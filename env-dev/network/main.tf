@@ -34,13 +34,6 @@ resource "aws_accessanalyzer_analyzer" "access_analyzer" {
   analyzer_name = "AHROC"
 }
 
-# Already provisioned in persistence/mongodb
-
-#resource "aws_key_pair" "ssh_key_281" {
-#  key_name   = "${var.key_name}"
-#  public_key = file("~/.ssh/id_rsa.pub")
-#}
-
 module "ahroc_main_vpc" {
 
   #source = "git::https://github.com/WilliamDrewAeroNomos/tf-modules.git//modules/vpc?ref=v2.0.0"
