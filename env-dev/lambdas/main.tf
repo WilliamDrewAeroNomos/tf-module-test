@@ -81,7 +81,7 @@ output "function_name" {
 #------------------
 
 resource "aws_apigatewayv2_api" "lambda" {
-  name          = "Lambda API Gateway - Zip/S3 bucket"
+  name          = "Lambda API Gateway Python"
   protocol_type = "HTTP"
 }
 
@@ -129,7 +129,7 @@ resource "aws_apigatewayv2_route" "hello_world" {
 }
 
 resource "aws_cloudwatch_log_group" "api_gw" {
-  name = "/aws/api_gw/${aws_apigatewayv2_api.lambda.name}"
+  name = "Yada"
 
   retention_in_days = 30
 }

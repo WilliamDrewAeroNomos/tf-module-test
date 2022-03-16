@@ -13,6 +13,6 @@ output "private_subnet_ids" {
   value = aws_subnet.private_subnets.*.id
 }
 
-output "key_name" {
-  value = "${aws_key_pair.ssh_key_281.key_name}"
-}
+#output "key_name" {
+#  value = "${aws_key_pair.ssh_key_281.key_name}"
+#}

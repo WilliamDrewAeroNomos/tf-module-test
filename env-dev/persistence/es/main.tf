@@ -18,8 +18,9 @@ resource "aws_elasticsearch_domain" "es" {
     automated_snapshot_start_hour = 23
   }
   vpc_options {
-    subnet_ids = [data.terraform_remote_state.network.outputs.public_subnet_1_id]
+    subnet_ids = [data.terraform_remote_state.network.outputs.public_subnet_ids[1]]   
   }
+  
   ebs_options {
     ebs_enabled = var.ebs_volume_size > 0 ? true : false
     volume_size = var.ebs_volume_size

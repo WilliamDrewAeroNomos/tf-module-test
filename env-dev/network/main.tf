@@ -30,10 +30,16 @@ data "aws_ami" "nat_instance_ami" {
   }
 }
 
-resource "aws_key_pair" "ssh_key_281" {
-  key_name   = "${var.key_name}"
-  public_key = file("~/.ssh/id_rsa.pub")
+resource "aws_accessanalyzer_analyzer" "access_analyzer" {
+  analyzer_name = "AHROC"
 }
+
+# Already provisioned in persistence/mongodb
+
+#resource "aws_key_pair" "ssh_key_281" {
+#  key_name   = "${var.key_name}"
+#  public_key = file("~/.ssh/id_rsa.pub")
+#}
 
 module "ahroc_main_vpc" {
 
@@ -121,12 +127,6 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 
-resource "aws_route" "private_route" {
-  route_table_id         = aws_route_table.private_route_table.id
-  destination_cidr_block = "0.0.0.0/0"
-  instance_id            = aws_instance.nat_instance.id
-}
-
 resource "aws_route_table_association" "private_route_table_association" {
   count          = 3
   subnet_id      = element(aws_subnet.private_subnets.*.id, count.index)
@@ -187,22 +187,6 @@ resource "aws_route_table_association" "nated_route_table_associations" {
 
 # NAT'd security group
 
-resource "aws_instance" "nat_instance" {
-
-  ami                         = data.aws_ami.nat_instance_ami.id
-  instance_type               = "t2.micro"
-  source_dest_check           = false
-  associate_public_ip_address = true
-  key_name                    = var.key_name
-  subnet_id                   = element(aws_subnet.public_subnets.*.id, 0)
-  vpc_security_group_ids      = ["${aws_security_group.nat_sg.id}"]
-
-  tags = {
-    Name = "${var.vpc_name}_NAT_Instance"
-  }
-
-}
-
 resource "aws_security_group" "nat_sg" {
   name   = "nat_instance_security_group"
   vpc_id = module.ahroc_main_vpc.vpc-main-id
@@ -246,5 +230,29 @@ resource "aws_security_group" "nat_sg" {
     Name = "NAT_Instance_Security_Group"
   }
 }
+
+# Move this to persistence/mongodb
+
+#resource "aws_route" "private_route" {
+#  route_table_id         = aws_route_table.private_route_table.id
+#  destination_cidr_block = "0.0.0.0/0"
+#  instance_id            = aws_instance.nat_instance.id
+#}
+
+#resource "aws_instance" "nat_instance" {
+#
+#  ami                         = data.aws_ami.nat_instance_ami.id
+#  instance_type               = "t2.micro"
+#  source_dest_check           = false
+#  associate_public_ip_address = true
+#  key_name                    = var.key_name
+#  subnet_id                   = element(aws_subnet.public_subnets.*.id, 0)
+#  vpc_security_group_ids      = ["${aws_security_group.nat_sg.id}"]
+
+#  tags = {
+#    Name = "${var.vpc_name}_NAT_Instance"
+#  }
+#
+#}
 
 
