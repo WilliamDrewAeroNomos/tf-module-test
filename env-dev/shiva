@@ -9,9 +9,12 @@ cd ../lambdas/s3
 
 sleep 5
 echo "Destroying lambdas..."
+
+terraform destroy -var-file=terraform.tfvars -auto-approve
+cd ../container
 terraform destroy -var-file=terraform.tfvars -auto-approve
 
-cd ../persistence/es
+cd ../../persistence/es
 
 sleep 5
 echo "Destroying OpenSearch resources..."
