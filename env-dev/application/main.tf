@@ -36,9 +36,11 @@ resource "aws_security_group" "ahroc-front-end-elb-securitygroup" {
 }
 
 resource "aws_elb" "ahroc-front-end-elb" {
-  name            = "ahroc-front-end-elb"
-  subnets         = [data.terraform_remote_state.network.outputs.public_subnet_ids[0], 
-  									data.terraform_remote_state.network.outputs.public_subnet_ids[1]]
+  name = "ahroc-front-end-elb"
+
+  subnets = [element(data.terraform_remote_state.network.outputs.public_subnet_ids, 0),
+  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1)]
+
   security_groups = [aws_security_group.ahroc-front-end-elb-securitygroup.id]
 
   listener {
