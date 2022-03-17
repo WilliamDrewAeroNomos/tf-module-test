@@ -7,5 +7,9 @@ output "ahroc-nodejs-image-id" {
 }
 
 output "ahroc-front-end-elb-sg-id" {
-  value = aws_security_group.ahroc-front-end-elb-securitygroup.id
+  value = aws_security_group.ahroc-front-end-elb-sg.id
+}
+
+output "ahroc-front-end-sg-id" {
+  value = aws_security_group.ahroc-front-end-sg.id
 }

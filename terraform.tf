@@ -116,6 +116,14 @@ variable "ENVIRONMENT" {
   type        = string
 }
 
+variable "PATH_TO_PRIVATE_KEY" {
+  default = "iac-ci-key"
+}
+
+variable "PATH_TO_PUBLIC_KEY" {
+  default = "iac-ci-key.pub"
+}
+
 # Persistence
 variable "vpc_name" {
   type = string
