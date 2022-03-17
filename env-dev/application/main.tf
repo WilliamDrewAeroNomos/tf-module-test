@@ -44,7 +44,7 @@ resource "aws_security_group" "ahroc-front-end-sg" {
 resource "aws_security_group" "ahroc-front-end-elb-sg" {
   vpc_id      = data.terraform_remote_state.network.outputs.vpc-main-id
   name        = "ahroc-front-end-elb-sg"
-  description = "Security group for the AHROC front end nodes"
+  description = "Security group for the AHROC front end ELB"
 
   egress {
     from_port   = 0
