@@ -11,8 +11,8 @@ data "aws_ami" "nodejs-image" {
   }
 }
 
-resource "aws_key_pair" "iac-ci-key" {
-  key_name   = "iac-ci-key"
+resource "aws_key_pair" "ahroc-front-end-key" {
+  key_name   = "ahroc-front-end-key"
   public_key = file(var.PATH_TO_PUBLIC_KEY)
 }
 
@@ -84,7 +84,7 @@ resource "aws_elb" "ahroc-front-end-elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:8080/login"
+    target              = "HTTP:8080/healthz"
     interval            = 30
   }
 
@@ -101,7 +101,7 @@ resource "aws_launch_configuration" "ahroc-front-end-launch-configuration" {
   name_prefix     = "ahroc-front-end-launch-configuration"
   image_id        = data.aws_ami.nodejs-image.id
   instance_type   = "t2.micro"
-  key_name        = aws_key_pair.iac-ci-key.key_name
+  key_name        = aws_key_pair.ahroc-front-end-key.key_name
   security_groups = [aws_security_group.ahroc-front-end-sg.id]
 }
 

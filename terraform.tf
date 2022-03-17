@@ -117,11 +117,11 @@ variable "ENVIRONMENT" {
 }
 
 variable "PATH_TO_PRIVATE_KEY" {
-  default = "iac-ci-key"
+  default = "ahroc-front-end-key"
 }
 
 variable "PATH_TO_PUBLIC_KEY" {
-  default = "iac-ci-key.pub"
+  default = "ahroc-front-end-key.pub"
 }
 
 # Persistence

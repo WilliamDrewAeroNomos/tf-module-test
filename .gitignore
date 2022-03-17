@@ -40,7 +40,7 @@ override.tf.json
 terraform.rc
 
 # secret key pair
-**/ahroc-key*
+**/ahroc-front-end-key*
 
 ## Eclipse
 .project
