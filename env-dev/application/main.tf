@@ -89,7 +89,8 @@ resource "aws_elb" "ahroc-front-end-elb" {
   name = "ahroc-front-end-elb"
 
   subnets = [element(data.terraform_remote_state.network.outputs.public_subnet_ids, 0),
-  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1)]
+  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1),
+  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 2)]
 
   security_groups = [aws_security_group.ahroc-front-end-elb-sg.id]
 
