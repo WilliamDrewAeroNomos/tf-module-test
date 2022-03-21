@@ -1,5 +1,5 @@
 
-data "archive_file" "lambda_hello_world" {
+data "archive_file" "zip" {
   type = "zip"
 
   source_dir  = "${path.module}/apps"
@@ -30,11 +30,11 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 
 resource "aws_lambda_function" "lambda_functions" {
   for_each         = var.lambdas
-  filename         = "apps.zip"
+  filename         = data.archive_file.zip.output_path
   function_name    = each.value.name
   role             = aws_iam_role.lambda_exec.arn
   handler          = "index.handler"
-  source_code_hash = filebase64sha256("apps.zip")
+  source_code_hash = data.archive_file.zip.output_base64sha256
 
   runtime = "nodejs14.x"
 }

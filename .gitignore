@@ -43,7 +43,7 @@ terraform.rc
 **/ahroc-front-end-key*
 
 # Zip files of lambda functions created for upload into S3 bucket
-**/.zip/*
+*.zip
 
 ## Eclipse
 .project
