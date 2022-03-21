@@ -128,9 +128,9 @@ variable "lambdas" {
   description = "Map of Lambda function names and API gateway resource paths."
   type        = map(any)
   default = {
-    user = {
+    users = {
       name = "user-lambda-function"
-      path = "user"
+      path = "users"
     },
     products = {
       name = "products-lambda-function"
