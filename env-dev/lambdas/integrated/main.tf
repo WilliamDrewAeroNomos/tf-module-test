@@ -7,7 +7,7 @@ data "archive_file" "zip" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
+  name = "ahroc_lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

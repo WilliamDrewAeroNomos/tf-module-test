@@ -144,7 +144,7 @@ variable "lambdas" {
 }
 
 variable "api-gateway-name" {
-  default = "integrated-gw"
+  default = "ahroc_lambda_api_gw"
 }
 
 # Persistence
