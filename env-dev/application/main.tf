@@ -89,7 +89,7 @@ resource "aws_elb" "ahroc-front-end-elb" {
   name = "ahroc-front-end-elb"
 
   subnets = [element(data.terraform_remote_state.network.outputs.public_subnet_ids, 0),
-  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1),
+    element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1),
   element(data.terraform_remote_state.network.outputs.public_subnet_ids, 2)]
 
   security_groups = [aws_security_group.ahroc-front-end-elb-sg.id]
@@ -137,7 +137,8 @@ resource "aws_launch_configuration" "ahroc-front-end-launch-configuration" {
 resource "aws_autoscaling_group" "ahroc-front-end-autoscaling" {
   name = "ahroc-front-end-autoscaling"
   vpc_zone_identifier = [element(data.terraform_remote_state.network.outputs.public_subnet_ids, 0),
-  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1)]
+    element(data.terraform_remote_state.network.outputs.public_subnet_ids, 1),
+  element(data.terraform_remote_state.network.outputs.public_subnet_ids, 2)]
   launch_configuration      = aws_launch_configuration.ahroc-front-end-launch-configuration.name
   min_size                  = 10
   max_size                  = 50
