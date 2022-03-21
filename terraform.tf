@@ -143,6 +143,10 @@ variable "lambdas" {
   }
 }
 
+variable "api-gateway-name" {
+  default = "integrated-gw"
+}
+
 # Persistence
 variable "vpc_name" {
   type = string
