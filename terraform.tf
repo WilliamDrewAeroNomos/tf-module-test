@@ -124,6 +124,25 @@ variable "PATH_TO_PUBLIC_KEY" {
   default = "ahroc-front-end-key.pub"
 }
 
+variable "lambdas" {
+  description = "Map of Lambda function names and API gateway resource paths."
+  type        = map(any)
+  default = {
+    user = {
+      name = "user-lambda-function"
+      path = "user"
+    },
+    products = {
+      name = "products-lambda-function"
+      path = "products"
+    },
+    orders = {
+      name = "orders-lambda-function"
+      path = "orders"
+    }
+  }
+}
+
 # Persistence
 variable "vpc_name" {
   type = string
