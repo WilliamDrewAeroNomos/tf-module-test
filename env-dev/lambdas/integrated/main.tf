@@ -1,4 +1,8 @@
 
+#------------------------------------------------------
+# Create archive file from sources
+#------------------------------------------------------
+
 data "archive_file" "zip" {
   type = "zip"
 
@@ -6,7 +10,11 @@ data "archive_file" "zip" {
   output_path = "${path.module}/apps.zip"
 }
 
-resource "aws_iam_role" "lambda_exec" {
+#------------------------------------------------------
+# Create basic lambda execution role 
+#------------------------------------------------------
+
+resource "aws_iam_role" "lambda_basic_execution_role" {
   name = "ahroc_lambda"
 
   assume_role_policy = jsonencode({
@@ -23,8 +31,12 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
-  role       = aws_iam_role.lambda_exec.name
+#------------------------------------------------------
+# Attach policy to lambda execution role 
+#------------------------------------------------------
+
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution_policy" {
+  role       = aws_iam_role.lambda_basic_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -32,18 +44,38 @@ resource "aws_lambda_function" "lambda_functions" {
   for_each         = var.lambdas
   filename         = data.archive_file.zip.output_path
   function_name    = each.value.name
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_basic_execution_role.arn
   handler          = "index.handler"
   source_code_hash = data.archive_file.zip.output_base64sha256
 
   runtime = "nodejs14.x"
 }
 
-# Create the API gateway and resources
+resource "aws_lambda_permission" "apigw" {
+  for_each 			= aws_lambda_function.lambda_functions
+  #for_each      = var.lambdas
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = each.value.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # The "/*/*" portion grants access from any method on any resource
+  # within the API Gateway REST API.
+  source_arn = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*"
+}
+
+
+#------------------------------------------------------
+# Create the API gateway 
+#------------------------------------------------------
 
 resource "aws_api_gateway_rest_api" "api_gateway" {
   name = var.api-gateway-name
 }
+
+#------------------------------------------------------
+# Iterate over var.lambdas and set path 
+#------------------------------------------------------
 
 resource "aws_api_gateway_resource" "resources" {
   for_each    = var.lambdas
@@ -51,6 +83,10 @@ resource "aws_api_gateway_resource" "resources" {
   parent_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
   path_part   = each.value.path
 }
+
+#------------------------------------------------------
+# Iterate over resources and set resource_id and method
+#------------------------------------------------------
 
 resource "aws_api_gateway_method" "methods" {
   for_each         = aws_api_gateway_resource.resources
@@ -61,6 +97,22 @@ resource "aws_api_gateway_method" "methods" {
   api_key_required = false
 }
 
+
+resource "aws_api_gateway_method_response" "response_200" {
+  for_each    = aws_api_gateway_method.methods
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+
+  resource_id = each.value.resource_id
+  http_method = each.value.http_method
+  status_code = "200"
+
+  response_models = { "application/json" = "Empty" }
+}
+
+#------------------------------------------------------
+# Attach or integrate each lambda function to the API gateway
+#------------------------------------------------------
+
 resource "aws_api_gateway_integration" "integration" {
   for_each                = aws_api_gateway_method.methods
   rest_api_id             = each.value.rest_api_id
@@ -70,3 +122,21 @@ resource "aws_api_gateway_integration" "integration" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_functions[each.key].invoke_arn
 }
+
+
+resource "aws_api_gateway_deployment" "api_gateway_deployment" {
+  depends_on = [
+    aws_api_gateway_integration.integration,
+  ]
+
+  rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+  stage_name  = var.ENVIRONMENT
+}
+
+output "base_url" {
+  value = aws_api_gateway_deployment.api_gateway_deployment.invoke_url
+}
+#output "private_subnet_ids" {
+#  value = aws_subnet.private_subnets.*.id
+#}
+
