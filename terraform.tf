@@ -146,6 +146,12 @@ variable "lambdas" {
 variable "api-gateway-name" {
   default = "ahroc_lambda_api_gw"
 }
+variable "lambda_function_name" {
+  default = "hello_world"
+}
+variable "lambda_name" {
+  default = "hello_world_lambda"
+}
 
 # Persistence
 variable "vpc_name" {

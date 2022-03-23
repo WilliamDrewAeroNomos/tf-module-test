@@ -33,7 +33,7 @@ resource "aws_s3_bucket_object" "lambda_hello_world" {
 }
 
 resource "aws_lambda_function" "hello_world" {
-  function_name = "HelloWorld"
+  function_name = var.lambda_function_name
 
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_bucket_object.lambda_hello_world.key
@@ -49,11 +49,11 @@ resource "aws_lambda_function" "hello_world" {
 resource "aws_cloudwatch_log_group" "hello_world" {
   name = "/aws/lambda/${aws_lambda_function.hello_world.function_name}"
 
-  retention_in_days = 30
+  retention_in_days = 5
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
+  name = var.lambda_name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -79,17 +79,16 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 #------------------
 
 resource "aws_apigatewayv2_api" "lambda" {
-  name          = "Lambda API Gateway - Python"
+  name          = "Lambda API Gateway - S3"
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "lambda" {
 
   api_id = aws_apigatewayv2_api.lambda.id
-
-  name        = "serverless_lambda_stage"
+  name        = "hello_world_stage"
   auto_deploy = true
-
+  
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw.arn
 

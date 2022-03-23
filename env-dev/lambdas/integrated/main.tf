@@ -53,7 +53,6 @@ resource "aws_lambda_function" "lambda_functions" {
 
 resource "aws_lambda_permission" "apigw" {
   for_each 			= aws_lambda_function.lambda_functions
-  #for_each      = var.lambdas
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = each.value.function_name
