@@ -3,17 +3,27 @@
 # Lambda
 #------------------
 
-resource "random_pet" "lambda_bucket_name" {
-  prefix = "army-ahroc-lambdas"
-  length = 4
-}
+#resource "random_pet" "lambda_bucket_name" {
+#  prefix = "army-ahroc-lambdas"
+#  length = 4
+#}
 
-resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = random_pet.lambda_bucket_name.id
+#resource "aws_s3_bucket" "lambda_bucket" {
+#  bucket = random_pet.lambda_bucket_name.id
+#
+#  acl           = "private"
+#  force_destroy = true
+#}
 
-  acl           = "private"
-  force_destroy = true
-}
+#resource "aws_s3_bucket_object" "lambda_hello_world" {
+#  provider = aws.S3-bucket-object-tags
+#  bucket   = aws_s3_bucket.lambda_bucket.id
+
+#  key    = "hello-world.zip"
+#  source = data.archive_file.lambda_hello_world.output_path
+
+#  etag = filemd5(data.archive_file.lambda_hello_world.output_path)
+#}
 
 data "archive_file" "lambda_hello_world" {
   type = "zip"
@@ -22,28 +32,16 @@ data "archive_file" "lambda_hello_world" {
   output_path = "${path.module}/hello-world.zip"
 }
 
-resource "aws_s3_bucket_object" "lambda_hello_world" {
-  provider = aws.S3-bucket-object-tags
-  bucket   = aws_s3_bucket.lambda_bucket.id
-
-  key    = "hello-world.zip"
-  source = data.archive_file.lambda_hello_world.output_path
-
-  etag = filemd5(data.archive_file.lambda_hello_world.output_path)
-}
-
 resource "aws_lambda_function" "hello_world" {
-  function_name = var.lambda_function_name
 
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_bucket_object.lambda_hello_world.key
-
-  runtime = "nodejs12.x"
-  handler = "hello.handler"
-
+  # s3_bucket = aws_s3_bucket.lambda_bucket.id
+  # s3_key    = aws_s3_bucket_object.lambda_hello_world.key
+  filename         = data.archive_file.lambda_hello_world.output_path
+  function_name    = var.lambda_function_name
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "hello.handler"
   source_code_hash = data.archive_file.lambda_hello_world.output_base64sha256
-
-  role = aws_iam_role.lambda_exec.arn
+  runtime          = "nodejs12.x"
 }
 
 resource "aws_cloudwatch_log_group" "hello_world" {
@@ -85,10 +83,10 @@ resource "aws_apigatewayv2_api" "lambda" {
 
 resource "aws_apigatewayv2_stage" "lambda" {
 
-  api_id = aws_apigatewayv2_api.lambda.id
+  api_id      = aws_apigatewayv2_api.lambda.id
   name        = "hello_world_stage"
   auto_deploy = true
-  
+
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gw.arn
 
