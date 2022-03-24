@@ -129,16 +129,19 @@ variable "lambdas" {
   type        = map(any)
   default = {
     users = {
-      name = "user-lambda-function"
-      path = "users"
+      name    = "users-lambda"
+      path    = "users"
+      handler = "users.handler"
     },
     products = {
-      name = "products-lambda-function"
-      path = "products"
+      name    = "products-lambda"
+      path    = "products"
+      handler = "products.handler"
     },
     orders = {
-      name = "orders-lambda-function"
-      path = "orders"
+      name    = "orders-lambda"
+      path    = "orders"
+      handler = "orders.handler"
     }
   }
 }

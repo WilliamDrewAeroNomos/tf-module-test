@@ -1,8 +1,6 @@
 
 # Outputs
 
-output "base_urls" {
-  description = "Base URL for API Gateway stage."
-
-  value = aws_api_gateway_integration.integration.*.uri
-}
+#output "base_urls" {
+#  value = aws_api_gateway_integration.integration.*.uri
+#}

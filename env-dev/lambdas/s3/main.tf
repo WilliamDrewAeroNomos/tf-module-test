@@ -3,28 +3,6 @@
 # Lambda
 #------------------
 
-#resource "random_pet" "lambda_bucket_name" {
-#  prefix = "army-ahroc-lambdas"
-#  length = 4
-#}
-
-#resource "aws_s3_bucket" "lambda_bucket" {
-#  bucket = random_pet.lambda_bucket_name.id
-#
-#  acl           = "private"
-#  force_destroy = true
-#}
-
-#resource "aws_s3_bucket_object" "lambda_hello_world" {
-#  provider = aws.S3-bucket-object-tags
-#  bucket   = aws_s3_bucket.lambda_bucket.id
-
-#  key    = "hello-world.zip"
-#  source = data.archive_file.lambda_hello_world.output_path
-
-#  etag = filemd5(data.archive_file.lambda_hello_world.output_path)
-#}
-
 data "archive_file" "lambda_hello_world" {
   type = "zip"
 

@@ -45,14 +45,14 @@ resource "aws_lambda_function" "lambda_functions" {
   filename         = data.archive_file.zip.output_path
   function_name    = each.value.name
   role             = aws_iam_role.lambda_basic_execution_role.arn
-  handler          = "index.handler"
+  handler          = "${each.value.path}.handler"
   source_code_hash = data.archive_file.zip.output_base64sha256
 
   runtime = "nodejs14.x"
 }
 
 resource "aws_lambda_permission" "apigw" {
-  for_each 			= aws_lambda_function.lambda_functions
+  for_each      = aws_lambda_function.lambda_functions
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = each.value.function_name
