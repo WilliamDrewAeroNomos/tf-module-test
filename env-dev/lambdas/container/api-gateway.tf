@@ -31,7 +31,7 @@ resource "aws_api_gateway_integration" "api_gateway_integration" {
 
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = aws_lambda_function.std-lambda-function.invoke_arn
+  uri                     = aws_lambda_function.lambda_function.invoke_arn
   passthrough_behavior    = "WHEN_NO_TEMPLATES"
 
   request_templates = {

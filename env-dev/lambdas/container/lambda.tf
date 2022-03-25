@@ -39,7 +39,7 @@ resource "null_resource" "ecr_image" {
   }
 }
 
-data "aws_ecr_image" "lambda_image" {
+data "aws_ecr_image" "ecr_image" {
   depends_on = [
     null_resource.ecr_image
   ]
@@ -104,21 +104,21 @@ resource "aws_iam_policy" "lambda" {
   policy = data.aws_iam_policy_document.lambda.json
 }
 
-resource "aws_lambda_function" "std-lambda-function" {
+resource "aws_lambda_function" "lambda_function" {
   depends_on = [
     null_resource.ecr_image
   ]
   function_name = "${local.prefix}-lambda"
   role          = aws_iam_role.iam_role.arn
   timeout       = 300
-  image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
+  image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.ecr_image.id}"
   package_type  = "Image"
 }
 
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.std-lambda-function.function_name
+  function_name = aws_lambda_function.lambda_function.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource
@@ -128,7 +128,7 @@ resource "aws_lambda_permission" "apigw" {
 
 
 output "lambda_name" {
-  value = aws_lambda_function.std-lambda-function.id
+  value = aws_lambda_function.lambda_function.id
 }
 
 
