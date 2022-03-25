@@ -24,7 +24,7 @@ resource "aws_api_gateway_method" "number" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "lambda-python" {
+resource "aws_api_gateway_integration" "api_gateway_integration" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_method.number.resource_id
   http_method = aws_api_gateway_method.number.http_method
@@ -55,7 +55,7 @@ resource "aws_api_gateway_method_response" "response_200" {
 
 resource "aws_api_gateway_integration_response" "integrationResponse" {
   depends_on = [
-    aws_api_gateway_integration.lambda-python,
+    aws_api_gateway_integration.api_gateway_integration,
   ]
   rest_api_id = aws_api_gateway_rest_api.this.id
   resource_id = aws_api_gateway_resource.number.id
@@ -71,7 +71,7 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
 
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   depends_on = [
-    aws_api_gateway_integration.lambda-python,
+    aws_api_gateway_integration.api_gateway_integration,
     aws_api_gateway_integration_response.integrationResponse,
   ]
 
