@@ -1,11 +1,15 @@
-#
-#
-#
+#------------------------------------------------------
+# Create the API gateway 
+#------------------------------------------------------
 
 resource "aws_api_gateway_rest_api" "this" {
-  name        = "LambdaApiGateway"
-  description = "Lambda Container Application GW"
+  name        = "Lambda API Gateway - Container"
+  description = "Uses images from ECR created locally by Docker"
 }
+
+#------------------------------------------------------
+# Create resource, set GW ID and path
+#------------------------------------------------------
 
 resource "aws_api_gateway_resource" "number" {
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -87,6 +91,7 @@ resource "aws_api_gateway_integration_response" "integrationResponse" {
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   depends_on = [
     aws_api_gateway_integration.lambda-python,
+    aws_api_gateway_integration.lambda_root,
     aws_api_gateway_integration_response.integrationResponse,
   ]
 

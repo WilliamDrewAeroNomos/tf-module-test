@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "lambda" {
+resource "aws_iam_role" "iam_role" {
   name               = "${local.prefix}-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
 }
@@ -109,7 +109,7 @@ resource "aws_lambda_function" "std-lambda-function" {
     null_resource.ecr_image
   ]
   function_name = "${local.prefix}-lambda"
-  role          = aws_iam_role.lambda.arn
+  role          = aws_iam_role.iam_role.arn
   timeout       = 300
   image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
   package_type  = "Image"

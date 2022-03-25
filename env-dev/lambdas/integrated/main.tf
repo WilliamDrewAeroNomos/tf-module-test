@@ -3,33 +3,51 @@
 # Create archive file from sources
 #------------------------------------------------------
 
-data "archive_file" "zip" {
-  type = "zip"
+data "archive_file" "zip_files" {
+  for_each = var.lambdas
+  type     = "zip"
 
-  source_dir  = "${path.module}/apps"
-  output_path = "${path.module}/apps.zip"
+  source_dir  = "${path.module}/apps/${each.value.path}"
+  output_path = "${path.module}/${each.value.path}.zip"
 }
 
 #------------------------------------------------------
 # Create basic lambda execution role 
 #------------------------------------------------------
 
-resource "aws_iam_role" "lambda_basic_execution_role" {
-  name = "ahroc_lambda"
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-      }
-    ]
-  })
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
 }
+
+resource "aws_iam_role" "lambda_basic_execution_role" {
+  name = "lambda_basic_execution_role"
+    assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+}
+
+#resource "aws_iam_role" "lambda_basic_execution_role" {
+#  name = "ahroc_lambda"
+#
+#  assume_role_policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [{
+#      Action = "sts:AssumeRole"
+#      Effect = "Allow"
+#      Sid    = ""
+#      Principal = {
+#        Service = "lambda.amazonaws.com"
+#      }
+#      }
+#    ]
+#  })
+#}
 
 #------------------------------------------------------
 # Attach policy to lambda execution role 
@@ -42,11 +60,11 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution_policy" {
 
 resource "aws_lambda_function" "lambda_functions" {
   for_each         = var.lambdas
-  filename         = data.archive_file.zip.output_path
+  filename         = data.archive_file.zip_files[each.key].output_path
   function_name    = each.value.name
   role             = aws_iam_role.lambda_basic_execution_role.arn
   handler          = "${each.value.path}.handler"
-  source_code_hash = data.archive_file.zip.output_base64sha256
+  source_code_hash = data.archive_file.zip_files[each.key].output_base64sha256
 
   runtime = "nodejs14.x"
 }
@@ -70,6 +88,7 @@ resource "aws_lambda_permission" "apigw" {
 
 resource "aws_api_gateway_rest_api" "api_gateway" {
   name = var.api-gateway-name
+  description = "Multi-lambda deployment"
 }
 
 #------------------------------------------------------
@@ -84,14 +103,14 @@ resource "aws_api_gateway_resource" "resources" {
 }
 
 #------------------------------------------------------
-# Iterate over resources and set resource_id and method
+# Resource IDs and methods for each aws_api_gateway_resource
 #------------------------------------------------------
 
 resource "aws_api_gateway_method" "methods" {
   for_each         = aws_api_gateway_resource.resources
   rest_api_id      = aws_api_gateway_rest_api.api_gateway.id
   resource_id      = each.value.id
-  http_method      = "POST"
+  http_method      = "GET"
   authorization    = "NONE"
   api_key_required = false
 }
@@ -117,8 +136,8 @@ resource "aws_api_gateway_integration" "integration" {
   rest_api_id             = each.value.rest_api_id
   resource_id             = each.value.resource_id
   http_method             = each.value.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
+  integration_http_method = each.value.http_method
+  type                    = "AWS"
   uri                     = aws_lambda_function.lambda_functions[each.key].invoke_arn
 }
 

@@ -55,7 +55,8 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 #------------------
 
 resource "aws_apigatewayv2_api" "lambda" {
-  name          = "Lambda API Gateway - S3"
+  name          = "Lambda API Gateway - Stages"
+  description	  = "Uses nodeJS code archived locally" 
   protocol_type = "HTTP"
 }
 
