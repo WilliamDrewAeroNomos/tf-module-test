@@ -75,7 +75,7 @@ resource "aws_lambda_function" "lambda_function" {
   package_type  = "Image"
 }
 
-resource "aws_lambda_permission" "apigw" {
+resource "aws_lambda_permission" "lambda_permission" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_function.function_name
