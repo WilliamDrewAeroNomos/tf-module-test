@@ -156,6 +156,14 @@ variable "lambda_name" {
   default = "hello_world_lambda"
 }
 
+variable "phone_number_for_notification" {
+  type        = string
+  description = "Valid mobile number for notification"
+  default     = "(301) 523-1817"
+}
+
+
+
 # Persistence
 variable "vpc_name" {
   type = string
