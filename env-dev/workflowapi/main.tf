@@ -3,16 +3,14 @@ resource "random_pet" "server" {
 
 data "aws_iam_policy_document" "allow_state_machine_exec" {
   statement {
+  	effect  = "Allow"
     actions = [
       "sts:AssumeRole"
     ]
 
     principals {
       type = "Service"
-      identifiers = [
-        "states.amazonaws.com",
-        "events.amazonaws.com"
-      ]
+      identifiers = ["states.amazonaws.com", "apigateway.amazonaws.com"]
     }
   }
 }
@@ -52,15 +50,15 @@ EOF
 #------------------------------------------------------
 
 resource "aws_api_gateway_rest_api" "this" {
-  name        = "Lambda API Gateway - Container"
-  description = "Uses images from ECR created locally by Docker"
+  name        = "Lambda API Gateway - Prototype Start SM Execution"
+  description = "Prototyping starting SM via API GM"
 }
 
 
 resource "aws_api_gateway_resource" "number" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   parent_id   = aws_api_gateway_rest_api.this.root_resource_id
-  path_part   = "{${var.resource_name}+}"
+  path_part   = "${var.resource_name}"
 }
 
 resource "aws_api_gateway_method" "number" {
@@ -84,9 +82,36 @@ resource "aws_api_gateway_integration" "endpoint_integration" {
     "application/json" = <<EOF
 {
     "input": "$util.escapeJavaScript($input.json('$'))",
+    "name" " "KankakeeIllinois1959"
     "stateMachineArn": "arn:aws:states:us-east-1:206378228634:stateMachine:sample-state-machine"
 }
 EOF
+  }
+}
+
+resource "aws_api_gateway_method_response" "response_200" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+
+  resource_id = aws_api_gateway_resource.number.id
+  http_method = aws_api_gateway_method.number.http_method
+  status_code = "200"
+
+  response_models = { "application/json" = "Empty" }
+}
+
+resource "aws_api_gateway_integration_response" "integrationResponse" {
+  depends_on = [
+    aws_api_gateway_integration.endpoint_integration
+  ]
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.number.id
+  http_method = aws_api_gateway_method.number.http_method
+  status_code = aws_api_gateway_method_response.response_200.status_code
+  # Transforms the backend JSON response to json. The space is required!!
+  response_templates = {
+    "application/json" = <<EOF
+ 
+ EOF
   }
 }
 
