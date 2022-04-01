@@ -77,13 +77,6 @@ resource "aws_iam_role_policy" "lambda" {
   policy = data.aws_iam_policy_document.lambda.json
 }
 
-data "archive_file" "lambda" {
-  type        = "zip"
-  output_path = "${path.module}/.zip/lambda.zip"
-  source_dir  = "${path.module}/lambda"
-
-}
-
 resource "aws_lambda_function" "lambda" {
   function_name                  = local.name
   filename                       = data.archive_file.lambda.output_path
