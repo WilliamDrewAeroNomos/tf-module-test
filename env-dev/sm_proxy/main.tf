@@ -2,7 +2,7 @@
 # IAM
 #------------------------------------------------------------
 
-resource "aws_iam_role" "example_lambda" {
+resource "aws_iam_role" "lambda_role" {
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -19,16 +19,16 @@ resource "aws_iam_role" "example_lambda" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "example_lambda" {
-  policy_arn = aws_iam_policy.example_lambda.arn
-  role       = aws_iam_role.example_lambda.name
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_attachment" {
+  policy_arn = aws_iam_policy.lambda_policy.arn
+  role       = aws_iam_role.lambda_role.name
 }
 
-resource "aws_iam_policy" "example_lambda" {
-  policy = data.aws_iam_policy_document.example_lambda.json
+resource "aws_iam_policy" "lambda_policy" {
+  policy = data.aws_iam_policy_document.lambda_policy_document.json
 }
 
-data "aws_iam_policy_document" "example_lambda" {
+data "aws_iam_policy_document" "lambda_policy_document" {
   statement {
     sid       = "AllowSQSPermissions"
     effect    = "Allow"
@@ -80,7 +80,7 @@ data "archive_file" "example_lambda" {
 resource "aws_lambda_function" "example_lambda" {
   function_name = "example_lambda"
   handler       = "example_lambda.handler"
-  role          = aws_iam_role.example_lambda.arn
+  role          = aws_iam_role.lambda_role.arn
   runtime       = "nodejs14.x"
 
   filename         = data.archive_file.example_lambda.output_path
@@ -94,8 +94,8 @@ resource "aws_lambda_function" "example_lambda" {
 # SQS
 #------------------------------------------------------------
 
-resource "aws_sqs_queue" "some_queue" {
-  name = "SomeQueue"
+resource "aws_sqs_queue" "sm_trigger_queue" {
+  name = "Lambda_State_Machine_Trigger"
 }
 
 #------------------------------------------------------------
@@ -104,7 +104,7 @@ resource "aws_sqs_queue" "some_queue" {
 
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   batch_size       = 1
-  event_source_arn = aws_sqs_queue.some_queue.arn
+  event_source_arn = aws_sqs_queue.sm_trigger_queue.arn
   enabled          = true
   function_name    = aws_lambda_function.example_lambda.arn
 }
