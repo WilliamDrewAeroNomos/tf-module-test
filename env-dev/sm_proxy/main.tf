@@ -67,9 +67,8 @@ data "aws_iam_policy_document" "example_lambda" {
   }
 }
 
-/*
 #------------------------------------------------------------
-# SQS
+# Lambda
 #------------------------------------------------------------
 
 data "archive_file" "example_lambda" {
@@ -82,7 +81,7 @@ resource "aws_lambda_function" "example_lambda" {
   function_name = "example_lambda"
   handler       = "example_lambda.handler"
   role          = aws_iam_role.example_lambda.arn
-  runtime       = "nodejs6.10"
+  runtime       = "nodejs14.x"
 
   filename         = data.archive_file.example_lambda.output_path
   source_code_hash = data.archive_file.example_lambda.output_base64sha256
@@ -90,6 +89,7 @@ resource "aws_lambda_function" "example_lambda" {
   timeout     = 30
   memory_size = 128
 }
+/*
 #------------------------------------------------------------
 # SQS
 #------------------------------------------------------------
