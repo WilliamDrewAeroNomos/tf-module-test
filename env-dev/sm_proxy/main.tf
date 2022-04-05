@@ -98,7 +98,6 @@ resource "aws_sqs_queue" "some_queue" {
   name = "SomeQueue"
 }
 
-/*
 #------------------------------------------------------------
 # Event to source mapping
 #------------------------------------------------------------
@@ -109,6 +108,5 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   enabled          = true
   function_name    = aws_lambda_function.example_lambda.arn
 }
-*/
 
 
