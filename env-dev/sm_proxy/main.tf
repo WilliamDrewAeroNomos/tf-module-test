@@ -71,20 +71,20 @@ data "aws_iam_policy_document" "lambda_policy_document" {
 # Lambda
 #------------------------------------------------------------
 
-data "archive_file" "example_lambda" {
+data "archive_file" "state_machine_trigger_lambda" {
   type        = "zip"
-  source_file = "${path.module}/example_lambda.js"
-  output_path = "${path.module}/example_lambda.js.zip"
+  source_file = "${path.module}/state_machine_trigger_lambda.js"
+  output_path = "${path.module}/state_machine_trigger_lambda.js.zip"
 }
 
-resource "aws_lambda_function" "example_lambda" {
-  function_name = "example_lambda"
-  handler       = "example_lambda.handler"
+resource "aws_lambda_function" "state_machine_trigger_lambda" {
+  function_name = "state_machine_trigger_lambda"
+  handler       = "state_machine_trigger_lambda.handler"
   role          = aws_iam_role.lambda_role.arn
   runtime       = "nodejs14.x"
 
-  filename         = data.archive_file.example_lambda.output_path
-  source_code_hash = data.archive_file.example_lambda.output_base64sha256
+  filename         = data.archive_file.state_machine_trigger_lambda.output_path
+  source_code_hash = data.archive_file.state_machine_trigger_lambda.output_base64sha256
 
   timeout     = 30
   memory_size = 128
@@ -106,7 +106,7 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   batch_size       = 1
   event_source_arn = aws_sqs_queue.sm_trigger_queue.arn
   enabled          = true
-  function_name    = aws_lambda_function.example_lambda.arn
+  function_name    = aws_lambda_function.state_machine_trigger_lambda.arn
 }
 
 
