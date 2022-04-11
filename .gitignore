@@ -53,3 +53,4 @@ terraform.rc
 
 # Python
 **/.pydevproject
+.DS_Store
