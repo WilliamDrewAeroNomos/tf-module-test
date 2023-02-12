@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../tf-modules"
+		},
+		{
+			"path": "../../../terraform-aws-s3-event-bus"
+		}
+	]
+}
